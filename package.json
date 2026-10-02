@@ -1,0 +1,17 @@
+{
+  "name": "express-blog-sql",
+  "version": "0.0.1",
+  "description": "Un personalissimo blog personalizzato, da una persona",
+  "license": "ISC",
+  "author": "G_G",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "node server.js",
+    "dev": "node --watch --env-file=.env server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "mysql2": "^3.24.5"
+  }
+}
