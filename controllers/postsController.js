@@ -1,18 +1,7 @@
 import { articoli } from "../data/articoli.js";
 import connection from "../data/db.js";
 
-//index
-/* export const index = (req, res) => {
-  let filteredArticoli = articoli;
-
-  if (req.query.tag) {
-    filteredArticoli = articoli.filter(articolo => {
-      return articolo.tags.includes(req.query.tag);
-    });
-  }
-
-  res.json(filteredArticoli);
-}; */
+//INDEX
 export const index = (req, res) => {
   let sql = `SELECT DISTINCT a.* FROM posts a`;
 
@@ -28,10 +17,12 @@ export const index = (req, res) => {
   });
 };
 
-//show
+//SHOW
 export const show = (req, res) => {
-  const id = req.params.id;
+  const id = parseInt(req.params.id);
+
   const sql = "SELECT * FROM posts WHERE id = ?";
+
   connection.query(sql, [id], (err, results) => {
     if (err) return res.status(500).json({ error: "Database query failed" });
     if (results.length === 0) return res.status(404).json({ error: "Post not found" });
@@ -39,7 +30,7 @@ export const show = (req, res) => {
   });
 };
 
-//store
+//STORE
 export const store = (req, res) => {
   const newId = articoli[articoli.length - 1].id + 1;
   const newArticolo = {
@@ -58,7 +49,7 @@ export const store = (req, res) => {
   res.json(newArticolo);
 };
 
-//update
+//UPDATE
 export const update = (req, res) => {
   const id = parseInt(req.params.id);
   const articolo = articoli.find(articolo => articolo.id === id);
@@ -80,7 +71,7 @@ export const update = (req, res) => {
   res.json(articoli);
 };
 
-//modify
+//MODIFY
 export const modify = (req, res) => {
   const id = parseInt(req.params.id);
   const articolo = articoli.find(articolo => articolo.id === id);
@@ -109,24 +100,12 @@ export const modify = (req, res) => {
   res.json(articoli);
 };
 
-//destroy
+//DESTROY
 export const destroy = (req, res) => {
   const id = parseInt(req.params.id);
 
-  const articolo = articoli.find(articolo => articolo.id === id);
-
-  if (!articolo) {
-    res.status(404);
-    return res.json({
-      status: 404,
-      error: "Not found",
-      message: "Articolo non trovato",
-    });
-  }
-
-  articoli.splice(articoli.indexOf(articolo), 1);
-
-  console.log({ articoli: articoli });
-
-  res.sendStatus(204);
+  connection.query("DELETE FROM posts WHERE id = ?", [id], err => {
+    if (err) return res.status(500).json({ error: "Failed to delete post" });
+    res.sendStatus(204);
+  });
 };
