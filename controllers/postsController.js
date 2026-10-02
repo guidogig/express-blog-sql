@@ -14,7 +14,7 @@ import connection from "../data/db.js";
   res.json(filteredArticoli);
 }; */
 export const index = (req, res) => {
-  let sql = `SELECT a.* FROM posts a`;
+  let sql = `SELECT DISTINCT a.* FROM posts a`;
 
   if (req.query.tag) {
     sql += ` JOIN post_tag b ON a.id = b.post_id 
@@ -22,7 +22,7 @@ export const index = (req, res) => {
             WHERE c.label IN (?)`;
   }
 
-  connection.query(sql, req.query.tag, (err, results) => {
+  connection.query(sql, [req.query.tag], (err, results) => {
     if (err) return res.status(500).json({ error: "Database query failed" });
     res.json(results);
   });
